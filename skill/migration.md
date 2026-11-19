@@ -39,6 +39,8 @@ Values are converted to Langsys syntax as they are read:
 
 **Other formats are refused.** `laravel`, `rails-i18n`, `gettext`, or a file named `.php`, `.yml`, `.po` or `.mo`: `init()` throws `LegacyFormatError`, naming the format and the file. Those belong to other SDKs' migration paths.
 
+**Keep the translations the app already has (MIG-9).** Before the other languages' files are deleted, run `npx langsys-import --source <en.json> --format <format> --target <locale>=<file> …` once (`--dry-run` to look first; `--project`/`--key` or `LANGSYS_PROJECT_ID`/`LANGSYS_API_KEY`, a key that can write). It sends each key's source value with each target file's converted value as human translations, so they are never machine translated, and reports what was saved, what the word limit skipped and what it didn't send. In code: `importLegacyTranslations` and `buildLegacyImport` from `langsys-js-typescript/import`, Node only.
+
 **It is a migration tool, not a permanent mode.** Leave `legacyKeys` unset once the migration is done, and `t()` does no key lookup at all.
 
 A server or a framework bridge that reads its own files converts through the same code, so it registers the same phrase. `createLegacyKeys(files)`, `convertLegacyValue`, `convertLegacyPluralForms` and `convertLegacyCall` are exported from the main entry and from `langsys-js-typescript/pure`.

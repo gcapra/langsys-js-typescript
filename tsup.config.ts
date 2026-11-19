@@ -7,7 +7,7 @@ export default defineConfig([
         // `pure` is a SECOND entry, not a re-export of the first: the point is a
         // module graph that never reaches the HTTP client or the persisted
         // stores, and one bundle containing both would defeat that.
-        entry: ['src/index.ts', 'src/pure.ts'],
+        entry: ['src/index.ts', 'src/pure.ts', 'src/import.ts'],
         format: ['esm', 'cjs'],
         dts: true,
         sourcemap: true,
@@ -16,6 +16,19 @@ export default defineConfig([
         treeshake: true,
         splitting: false,
         minify: false,
+    },
+
+    // The `langsys-import` command (MIG-9), for Node only.
+    {
+        entry: { 'langsys-import': 'src/cli/langsys-import.ts' },
+        format: ['esm'],
+        platform: 'node',
+        banner: { js: '#!/usr/bin/env node' },
+        dts: false,
+        sourcemap: false,
+        clean: false,
+        target: 'node18',
+        splitting: false,
     },
 
     // Browser build — for a plain `<script>` page with no build step.

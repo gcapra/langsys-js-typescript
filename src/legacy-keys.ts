@@ -66,6 +66,8 @@ export interface LegacyKeyProblem {
 export interface LegacyKeys {
     /** The key's converted source value, or null when no file holds it (the MIG-2 miss). */
     resolve(key: string): LegacyKeyHit | null;
+    /** Every key the files hold, in configured order, once each; an i18next plural set is its base key. */
+    keys(): string[];
     /** Keys held by more than one file, with those files in configured order; the first answers. */
     duplicates(): Record<string, string[]>;
     /** Every value that converts to nothing recognised, and every file that is not a JSON object. */
@@ -120,6 +122,12 @@ export function createLegacyKeys(files: LegacyKeyFile[]): LegacyKeys {
                 return { ...converted, phrase: converted.text, category: found.category, key, file: file.name };
             }
             return null;
+        },
+
+        keys() {
+            const keys = new Set<string>();
+            for (const file of normalized) for (const key of Object.keys(leaves(file))) keys.add(key);
+            return [...keys];
         },
 
         duplicates() {

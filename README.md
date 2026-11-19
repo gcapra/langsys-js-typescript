@@ -527,6 +527,14 @@ Values are converted to Langsys syntax as they are read:
 
 A plural's argument is `count`, so pass `{ count }` in params. `name` is what errors report. `namespace` makes a per-namespace file answer only keys under that prefix, with the namespace as their category. With several files, the first that holds a key answers.
 
+**Keep the translations you already have.** Before deleting the other languages' files, send them to Langsys once, so they are stored as human translations, show at once and are never machine translated:
+
+```sh
+npx langsys-import --source src/locales/en.json --format i18next     --target es-es=src/locales/es.json --target fr-fr=src/locales/fr.json
+```
+
+It reads the project id and a key that can write from `--project` and `--key`, or `LANGSYS_PROJECT_ID` and `LANGSYS_API_KEY`, and `--dry-run` shows what it would send. Each source key registers as `t()` registers it, with every target file's value for the same key, converted the same way, plurals included. It prints what was saved, what the plan's human-translation word limit left for machine translation, and each translation it didn't send: missing from a file, empty, or not convertible. From a script, `importLegacyTranslations({ projectid, key, source, targets })` from `langsys-js-typescript/import` does the same and returns those counts; `buildLegacyImport(source, targets)` returns the request without sending it. Run it from your machine or a build step, never in code that reaches the browser: it needs a write key.
+
 This core reads `i18next`, `vue-i18n` and `plain`. A file in another format (`laravel`, `rails-i18n`, `gettext`, or a name ending `.php`, `.yml`, `.po` or `.mo`) makes `init` throw `LegacyFormatError`, naming the format and the file. Leave `legacyKeys` unset once the migration is done, and `t()` does no key lookup at all.
 
 `convertLegacyValue`, `convertLegacyPluralForms`, `convertLegacyCall` and `createLegacyKeys` are exported from `langsys-js-typescript/pure` too, so a server or a framework bridge converts through the same code and registers the same phrase.

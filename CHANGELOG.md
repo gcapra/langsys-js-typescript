@@ -1,3 +1,9 @@
+## 0.7.5 - unreleased
+
+### What's new
+
+- **`npx langsys-import` keeps the translations an app already has** (spec MIG-9). Before an app on `legacyKeys` deletes its other languages' files, `langsys-import --source en.json --format i18next --target es-es=es.json --target fr-fr=fr.json` sends each key's source value with each target file's value for the same key, converted as `t()` converts the source, plurals included, through `POST /translatable-items`. Langsys stores them as human translations, so they show at once and are never machine translated. It reports what was saved, what the plan's human-translation word limit skipped, and each translation it didn't send (missing from a file, empty, or not convertible); `--dry-run` sends nothing. `importLegacyTranslations()` and `buildLegacyImport()` do the same from a script, from the new `langsys-js-typescript/import` entry, Node only. Until now a browser app had to write that script itself.
+
 ## 0.7.4 - 2026-11-13
 
 ### Upgrading from 0.7.3
